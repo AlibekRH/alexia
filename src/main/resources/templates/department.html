@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ПРЕПОДАВАТЕЛЬСКИЙ СОСТАВ</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="/css/_all-skins.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <header class="main-header">
+        <!-- Logo -->
+        <a th:href="@{/home}" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><b>H</b>RS</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg" th:utext="${auth.role.role}"> </span>
+
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="/images/avatar5.png" class="user-image" alt="User Image">
+                            <span class="hidden-xs" th:utext="${auth.name}"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="/images/avatar5.png" class="img-circle" alt="User Image">
+
+                                <p>
+                                    <span class="hidden-xs" th:utext="${auth.name}"></span>
+                                    <small><span class="hidden-xs" th:utext="${auth.email}"></span></small>
+                                </p>
+                            </li>z
+                            <!-- Menu Body --
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a th:href="@{/myprofile/inf}" class="btn btn-primary btn-flat">Profile</a>
+                                </div>
+                                <div class="col-xs-offset-1 col-xs-4 text-center">
+                                    <a  th:href="@{/myprofile/change_password(id=${auth.id})}"><i class="fa fa-gears"></i> Change
+                                        Password</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a th:href="@{/logout}" class="btn btn-danger btn-flat">Sign out</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    	<aside class="main-sidebar">
+		<section class="sidebar">
+			<ul class="sidebar-menu">
+				<li class="treeview">
+					<a th:href="@{/home}">
+						<i class="fa fa-home text-yellow"></i> <span>Домой</span>
+						<span class="pull-right-container">
+            </span>
+					</a>
+				</li>
+				<li th:if="${control != 'ADMIN'}" class="treeview">
+					<a th:href="@{/myprofile/mytasks(id=${auth.id})}">
+						<i class="fa fa-file-text text-green"></i> <span>Мои задачи</span>
+						<span class="pull-right-container">
+            </span>
+					</a>
+				</li>
+				<li th:if="${control != 'ADMIN'}" class="treeview">
+					<a th:href="@{/myprofile/inf}">
+						<i class="fa fa-gears text-blue"></i> <span>Настройки профиля</span>
+						<span class="pull-right-container">
+            </span>
+					</a>
+				</li>
+				   <li class="treeview">
+                    <a th:href="@{/users/all}">
+                        <i class="fa fa-users text-green"></i>
+                        <span>Личный состав</span>
+                        <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>          
+                    </a>
+                    	<ul class="treeview-menu">
+						<li th:if="${control == 'ADMIN'}" class="treeview">
+					<a href="#">
+						<i class="fa fa-odnoklassniki text-blue"></i>
+						<span>Преподовательский <br>состав</span>
+						<span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+					</a>
+					<ul class="treeview-menu">
+						<li><a th:href="@{/admin/teachers/new}"><i class="fa fa-plus"></i> Добавить</a></li>
+						<li><a th:href="@{/admin/teachers/all}"><i class="fa fa-eye"></i> Посмотреть</a></li>
+					</ul>
+				</li>	
+				<li th:if="${control == 'ADMIN'}" class="treeview">
+					<a href="#">
+						<i class="fa fa-odnoklassniki text-blue"></i>
+						<span>HR отдел</span>
+						<span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+					</a>
+					<ul class="treeview-menu">
+						<li><a th:href="@{/admin/departments/new}"><i class="fa fa-plus"></i> Добавить</a></li>
+						<li><a th:href="@{/admin/departments/all}"><i class="fa fa-eye"></i> Посмотреть</a></li>
+					</ul>
+				</li>
+					<li th:if="${control == 'ADMIN'}" class="treeview">
+					<a href="#">
+						<i class="fa fa-odnoklassniki text-blue"></i>
+						<span>Библиотека</span>
+						<span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+					</a>
+					<ul class="treeview-menu">
+						<li><a th:href="@{/admin/librarys/new}"><i class="fa fa-plus"></i> Добавить</a></li>
+						<li><a th:href="@{/admin/librarys/all}"><i class="fa fa-eye"></i> Посмотреть</a></li>
+					</ul>
+				</li>	
+				<li th:if="${control == 'ADMIN'}" class="treeview">
+					<a href="#">
+						<i class="fa fa-odnoklassniki text-blue"></i>
+						<span>IT отдел</span>
+						<span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+					</a>
+					<ul class="treeview-menu">
+						<li><a th:href="@{/admin/its/new}"><i class="fa fa-plus"></i> Добавить</a></li>
+						<li><a th:href="@{/admin/its/all}"><i class="fa fa-eye"></i> Посмотреть</a></li>
+					</ul>
+				</li>	
+					</ul>
+                </li>
+					
+						
+				
+					
+				<li th:if="${control == 'ADMIN'}" class="treeview">
+					<a href="#">
+						<i class="fa fa-files-o text-purple"></i>
+						<span>Приказы</span>
+						<span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+					</a>
+					<ul class="treeview-menu">
+							<li th:if="${control == 'ADMIN'}" class="treeview">
+					<a href="#">
+						<i class="fa fa-files-o text-purple"></i>
+						<span>Добавить приказы</span>
+						<span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+					</a>
+					<ul class="treeview-menu">
+						<li><a th:href="@{/admin/tasks/new}"><i class="fa fa-plus"></i> Новый приказ</a></li>
+						<li><a th:href="@{/admin/tasks/all}"><i class="fa fa-file-text"></i> Посмотреть приказы</a></li>
+					</ul>
+					</li>
+							<li th:if="${control == 'ADMIN'}" class="treeview">
+					<a href="#">
+						<i class="fa fa-laptop text-red "></i>
+						<span>Приказ для сотрудника</span>
+						<span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right "></i>
+            </span>
+					</a>
+					<ul class="treeview-menu">
+						<li><a th:href="@{/admin/user-task/new}"><i class="fa fa-laptop"></i> Назначить приказ</a>
+						</li>
+						<li><a th:href="@{/admin/user-task/all}"><i class="fa fa-files-o"></i> Приказы сотрудника</a></li>
+					</ul>
+				</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
+		<!-- /.sidebar -->
+	</aside>
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div th:if="${mode == 'MODE_ALL'}">
+                <section class="content-header">
+                    <h1>
+                        HR отдел
+                    </h1>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Имя</th>
+                                            <th>Фамилия</th>
+                                            <th>Отчество</th>
+                                            <th>Дата рождения</th>
+                                             <th>Дата добавления</th>
+                                            <th></th>
+                                       		<th></th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="department : ${departments}">
+                                            <td th:text="${department.name}"></td>
+                                       		<td th:text="${department.surname}"></td>
+                                            <td th:text="${department.patronymic}"></td>
+                                              <td th:text="${department.birthday}"></td>
+                                             <td th:text="${department.dateCreated}"></td> 
+                                                <td><a th:href="@{/admin/departments/new(id=${department.id})}"><span
+                                                    class="glyphicon glyphicon-pencil"></span> Новый</a></td>
+                                            <td><a th:href="@{/admin/departments/update(id=${department.id})}"><span
+                                                    class="glyphicon glyphicon-pencil"></span> ИЗМЕНИТЬ</a></td>
+                                            <td><a th:href="@{/admin/departments/delete(id=${department.id})}"><span
+                                                    class="glyphicon glyphicon-trash"></span> УДАЛИТЬ</a></td>
+                                            <td><a th:href="@{/admin/departments/per_inf(id=${department.id})}"><span
+                                                    class="glyphicon glyphicon-user"></span> ИНФОРМАЦИЯ</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </section>
+            </div>
+            <div th:if="${mode == 'MODE_UPDATE'}">
+                <div class="container">
+                    <div class="row">
+                        <form autocomplete="off" action="#" th:action="@{/admin/departments/save}"
+                              th:object="${department}" method="post" class="form-horizontal"
+                              role="form">
+                            <fieldset>
+                                <!-- Form Name -->
+                                <legend>Edit department</legend>
+                                <!-- Text input-->
+                                <input type="hidden" name="id" th:field="${department.id}"/>
+                                <div class="form-group">
+                                                       
+                                    <label class="col-md-4 control-label" for="textinput">department
+                                        Name</label>
+                                    <div class="col-md-4">
+                                        <input type="text" th:field="${department.name}" placeholder="Name"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                       <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">department
+                                        Name</label>
+                                    <div class="col-md-4">
+                                        <input type="text" th:field="${department.surname}" placeholder="Name"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Отчество</label>
+                                    <div class="col-md-4">
+                                        <input type="text" th:field="${department.patronymic}"
+                                               placeholder="Отчество" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Статус сотрудника</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="radio" class="col-sm-1" name="finished"
+                                               value="активен"/>
+                                        <div class="col-sm-2">Yes</div>
+                                        <input type="radio" class="col-md-1" name="finished"
+                                               value="не активен"/>
+                                        <div class="col-sm-2">Не активен</div>
+                                    </div>
+  
+							</div>
+                                <!-- Button (Double) -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-8">
+                                        <button type="submit" id="submitButton" name="submitButton"
+                                                class="btn btn-success">Сохранить
+                                        </button>
+                                        <button type="button" class="btn btn-inverse"
+                                                onclick="window.history.back()">Отменить
+                                        </button>
+                                    </div>
+
+                                </div>
+							
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${mode == 'MODE_NEW'}">
+                <div class="container">
+                    <div class="row">
+                        <form autocomplete="off" action="#" th:action="@{/admin/departments/save}"
+                              th:object="${department}" method="post" class="form-horizontal"
+                              role="form">
+                            <fieldset>
+                                <!-- Form Name -->
+                                <legend>Новый сотрудник</legend>
+                                <!-- Text input-->       
+     
+				<div class="container">
+    		<div class="tabs">
+		 <div id="content-1">
+                            <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Личные данные</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Имя*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value=""  class="form-control" placeholder="Имя" th:field="${department.name}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Фамилия*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="Фамилия" th:field="${department.surname}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Отчество*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="Отчество" th:field="${department.patronymic}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Дата рождения*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="1998.12.21" class="form-control" th:field="${department.birthday}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Табельный номер*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="Табельный номер" th:field="${department.tabelnum}">
+						              </div>
+						            </div>
+						
+						   			  <div class="col-md-4 control-label">
+						              <label class="control-label">Место рождения*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-male" aria-hidden="true"></i>
+						              </span>
+						              <select name="gender" title="Gender" th:field="${department.placebirth}" style="padding: 5px 5px;text-transform: capitalize;width: 305px;height: 34px;">
+						                <option th:value="${p}" th:each="p: ${countryObject}" th:text="${p}"></option>  
+						                </select>         
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+						<!--  -->
+						 <div class="validation-form">
+                                 <div class="vali-form-group">                  
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Пол*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+               <select name="gender" title="Gender" th:field="${department.gender}" style="padding: 5px 5px;text-transform: capitalize;width: 305px;height: 34px;">
+						                <option th:value="${p}" th:each="p: ${genderObject}" th:text="${p}"></option>  
+						                </select> 
+                                 </div>
+                            </div>
+                              </div>
+    	 	
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Семейное положение*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+        <select name="gender" title="Gender" th:field="${department.status}" style="padding: 5px 5px;text-transform: capitalize;width: 305px;height: 34px;">
+						                <option th:value="${p}" th:each="p: ${familyObject}" th:text="${p}"></option>  
+						                </select> 
+                                 </div>
+                            </div>
+                            
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Образование*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="Образование" th:field="${department.education}">
+                                 </div>
+                            </div>
+                               
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">ИИН*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="ИИН" th:field="${department.iin}">
+                                 </div>
+                            </div>
+                            
+                                      <div class="col-md-4 control-label">
+				              <label class="control-label">Изображение профиля*</label>
+				              <div class="input-group">             
+				                  <span class="input-group-addon">
+				              <i class="fa fa-picture-o" aria-hidden="true"></i>
+				              </span>
+				              <input type="file" name="pfimg" title="Изображение профиля" class="form-control" name="fileupload"  >
+				              </div>
+				            </div>
+                                </div>
+						              <div class="clearfix"> </div>
+						              
+						<!-- - -->
+                                </div>
+						<!--  -->
+						<div class="validation-form">
+						     <h3 style="margin-top: 5px">Телефоны</h3>
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+             					 <label class="control-label">Домашний телефон*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="" th:field="${department.telephone}">
+                                 </div>
+                            </div>
+						
+						                 <div class="col-md-4 control-label">
+						              <label class="control-label">Рабочий*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.telwork}">
+						              </div>
+						            </div>	
+						                       <div class="col-md-4 control-label">
+						              <label class="control-label">Мобильный*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.mobile}">
+						              </div>
+						            </div>	
+						              <div class="clearfix"> </div>
+						            </div>
+						             </div>
+						             
+						            		  <div class="validation-form">                              
+                                 <div class="vali-form-group">
+                                  <h3 style="margin-top: 5px">Паспортные данные</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Документ*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="Документ" th:field="${department.document}">
+                                 </div>
+                            </div>
+                              </div>
+    
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Серия*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="Серия" th:field="${department.seria}">
+                                 </div>
+                            </div>
+                            
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Номер документа*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="Номер документа" th:field="${department.numdoc}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+             					 <label class="control-label">Кем выдан документ*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="Кем выдан документ" th:field="${department.isdoc}">
+                                 </div>
+                            </div>
+						
+						                 <div class="col-md-4 control-label">
+						              <label class="control-label">Дата выдачи*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="1998.12.21" class="form-control" th:field="${department.isdate}">
+						              </div>
+						            </div>
+						
+						       		       <div class="col-md-4 control-label">
+						              <label class="control-label">Годен до*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="1998.12.21" class="form-control" th:field="${department.undate}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+								
+						    	 <div class="vali-form-group">
+						           	        <div class="col-md-4 control-label">
+						              <label class="control-label">Национальность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-map-marker" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="Национальность" th:field="${department.national}">
+						              </div>
+						            </div>
+						
+						
+						                   <div class="col-md-4 control-label">
+						              <label class="control-label">Гражданство*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-globe" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="Гражданство" th:field="${department.citizenship}">
+						              </div>						              
+						           		 </div>						            
+						            		</div>		            
+						              <div class="clearfix"> </div>      
+						<!-- - -->
+                                </div>
+							<!-- - -->
+									<div class="validation-form">
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+             					 <label class="control-label">Адрес прописки*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="">
+                                 </div>
+                            </div>
+						
+						                 <div class="col-md-4 control-label">
+						              <label class="control-label">Адрес проживания*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control">
+						              </div>
+						            </div>		
+						              <div class="clearfix"> </div>
+						            </div>
+
+						            </div>
+						            
+      </div>
+      <div id="content-2">
+                            <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Работа</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Статус*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value=""  class="form-control" placeholder="Статус" th:field="${department.workstatus}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Вид работы*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="Вид работы" th:field="${department.workview}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Организация*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="Организация" th:field="${department.workorganization}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						   
+						               		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Подразделение*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="Организация" th:field="${department.worksub}">
+                                 </div>
+                            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Должность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="Должность" th:field="${department.workunit}">
+						              </div>
+						            </div>
+												   
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Квалификация (категория)*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.workqualification}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+						<!--  -->
+						 <div class="validation-form">
+                                 <div class="vali-form-group">  
+                                    <h3>Трудовой договор</h3>                
+                          		<div class="vali-form-group">
+         				     <div class="col-md-4 control-label">
+						              <label class="control-label">Номер ТД*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.worknumber}">
+						              </div>
+						            </div>
+                              </div>
+    	 	
+                                <div class="col-md-4 control-label">
+						              <label class="control-label">Дата ТД*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.workdata}">
+						              </div>
+						            </div>
+                            
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Срок трудового договора*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.05.2020" th:field="${department.workterm}">
+                                 </div>
+                            </div>
+                               
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата приема на работу*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.05.2020" th:field="${department.workreception}">
+                                 </div>
+                            </div>
+                                                   
+				            		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата расторжения</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.05.2020" th:field="${department.workdissolution}">
+                                 </div>
+                            </div>
+                            
+                            		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Кол-во отпуск дней по ТД</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="" th:field="${department.worknumleave}">
+                                 </div>
+                            </div>
+                            		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Допольнительные дни отпуска</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="" th:field="${department.workaddholidays}">
+                                 </div>
+                            </div>
+                            
+                                </div>
+						              <div class="clearfix"> </div>
+  						<!-- - -->
+                                </div>
+							<!-- - -->
+				            
+      </div>
+  
+      <div id="content-3">
+                      <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Стаж</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Вид стажа*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value=""  class="form-control" placeholder="" th:field="${department.expform}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата приема*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.exprecept}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата расторжения ТД*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.expdissolution}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Названия организации*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.exporganization}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Должность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.exppost}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+      </div>
+    <div id="content-4">
+                              <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Семья и родственники</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">ФИО*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value=""  class="form-control" placeholder="ФИО" th:field="${department.familyname}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Степень родства*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.familydigree}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата рождения*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.familybirth}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Место рождения*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.familyplace}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Место работы*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.familywork}">
+						              </div>
+						            </div>
+						
+						   			     <div class="col-md-4 control-label">
+						              <label class="control-label">Должность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.familypost}">
+						              </div>
+						            </div>
+						                <div class="col-md-4 control-label">
+						              <label class="control-label">Место жительства*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.workaddholidays}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+						<!--  -->    
+      			</div>
+      <div id="content-5">
+       				                 <div class="validation-form">
+                                 <div class="vali-form-group">
+                                  <h3>Оброзования</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Наименования учебного заведения*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value=""  class="form-control" placeholder="" th:field="${department.eduinstitution}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Местонохождение*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.edulacation}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Год поступления*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.edurecept}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Год окончания*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.edugraduation}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Специальность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.eduspecialty}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Квалификация (категория)*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.educlass}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Серия диплома*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.eduseria}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">№ диплома*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.edunum}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Дата диплома*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.edudiploma}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Ученая степень*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.edudegree}">
+						              </div>
+						            </div>
+						            
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+      </div>    
+      <div id="content-6">
+          <div class="validation-form"> 
+                                 <div class="vali-form-group">
+                                  <h3>Военский учет</h3>
+                          		<div class="vali-form-group">       			
+                                <div class="col-md-4 control-label">
+						              <label class="control-label">Документ военского учета*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarydoc}">
+						              </div>
+						            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">№ военного билета*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.militarytic}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Служба в армии*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.militaryser}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Наименования военкомата*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.militaryname}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Группа учета*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarygroup}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Категория учета*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarycat}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Состав*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarystr}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Военная-учетная специальность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militaryspec}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Степень годности к службе*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarysuit}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Дата сверки*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarydate}">
+						              </div>
+						            </div>
+						                  <div class="col-md-4 control-label">
+						              <label class="control-label">Дата след. сверки*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarytrack}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>  
+      </div>
+      <div id="content-7">
+            <div class="validation-form">
+                                 <div class="vali-form-group">
+                                  <h3>Мед. книжка</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Серия*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value=""  class="form-control" placeholder="" th:field="${department.medicalseria}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Номер*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.medicalnum}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата получения*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.medicaldate}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Перенесенные заболевания*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.medicalpast}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Наличие хронических заболеваний*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.medicalchronic}">
+						              </div>
+						            </div>	      
+						              <div class="clearfix"> </div>
+						            </div>					
+                  </div>
+      </div>
+      <div class="tabs__links">
+        <a href="#content-1">Личные данные</a>
+        <a href="#content-2">Работа</a>
+        <a href="#content-3">Стаж</a>
+        <a href="#content-4">Семья и родственники</a>
+        <a href="#content-5">Оброзование</a>
+        <a href="#content-6">Воинский учет</a>
+        <a href="#content-7">Мед.книжка</a>
+      </div>
+    </div>
+
+  </div>
+							<!-- - -->
+                                <!-- Button (Double) -->
+                                <br>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-8">
+                                        <button type="submit" id="submtButton" name="submitButton"
+                                                class="btn btn-success">Сохранить
+                                        </button>
+                                        <button type="button" class="btn btn-inverse"
+                                                onclick="window.history.back()">Отменить
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${mode == 'MODE_INF'}">
+                <section class="content-header">
+                    <h2>
+                        Информация
+                    </h2>
+                    <!-- /.box-header -->
+                 
+                </section>
+
+                <!-- Main  readonly content -->
+                <section class="content" th:each="departments : ${department}">
+           
+                    <!-- /.row -->
+                    <div class="container">
+    		<div class="tabs">
+		 <div id="content-1">
+                            <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Личные данные</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Имя*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value=""  class="form-control" placeholder="Имя" th:field="${department.name}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Фамилия*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="Фамилия" th:field="${department.surname}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Отчество*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="Отчество" th:field="${department.patronymic}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Дата рождения*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="1998.12.21" class="form-control" th:field="${department.birthday}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Табельный номер*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="Табельный номер" th:field="${department.tabelnum}">
+						              </div>
+						            </div>
+						
+						   			  <div class="col-md-4 control-label">
+						              <label class="control-label">Место рождения*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-male" aria-hidden="true"></i>
+						              </span>
+						              <select name="gender"  title="Gender" th:field="${department.placebirth}" style="padding: 5px 5px;text-transform: capitalize;width: 305px;height: 34px;">
+						                <option th:value="${p}" th:each="p: ${countryObject}" th:text="${p}"></option>  
+						                </select>         
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+						<!--  -->
+						 <div class="validation-form">
+                                 <div class="vali-form-group">                  
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Пол*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+               <select name="gender" readonly title="Gender" th:field="${department.gender}" style="padding: 5px 5px;text-transform: capitalize;width: 305px;height: 34px;">
+						                <option th:value="${p}" th:each="p: ${genderObject}" th:text="${p}"></option>  
+						                </select> 
+                                 </div>
+                            </div>
+                              </div>
+    	 	
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Семейное положение*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+        <select name="gender" readonly title="Gender" th:field="${department.status}" style="padding: 5px 5px;text-transform: capitalize;width: 305px;height: 34px;">
+						                <option th:value="${p}" th:each="p: ${familyObject}" th:text="${p}"></option>  
+						                </select> 
+                                 </div>
+                            </div>
+                            
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Образование*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="Образование" th:field="${department.education}">
+                                 </div>
+                            </div>
+                               
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">ИИН*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="ИИН" th:field="${department.iin}">
+                                 </div>
+                            </div>
+                            
+                                      <div class="col-md-4 control-label">
+				              <label class="control-label">Изображение профиля*</label>
+				              <div class="input-group">             
+				                  <span class="input-group-addon">
+				              <i class="fa fa-picture-o" aria-hidden="true"></i>
+				              </span>
+				              <input type="file" readonly name="pfimg" title="Изображение профиля" class="form-control" name="fileupload"  >
+				              </div>
+				            </div>
+                                </div>
+						              <div class="clearfix"> </div>
+						              
+						<!-- - -->
+                                </div>
+						<!--  -->
+						<div class="validation-form">
+						     <h3 style="margin-top: 5px">Телефоны</h3>
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+             					 <label class="control-label">Домашний телефон*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="" th:field="${department.telephone}">
+                                 </div>
+                            </div>
+						
+						                 <div class="col-md-4 control-label">
+						              <label class="control-label">Рабочий*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.telwork}">
+						              </div>
+						            </div>	
+						                       <div class="col-md-4 control-label">
+						              <label class="control-label">Мобильный*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.mobile}">
+						              </div>
+						            </div>	
+						              <div class="clearfix"> </div>
+						            </div>
+						             </div>
+						             
+						            		  <div class="validation-form">                              
+                                 <div class="vali-form-group">
+                                  <h3 style="margin-top: 5px">Паспортные данные</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Документ*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="Документ" th:field="${department.document}">
+                                 </div>
+                            </div>
+                              </div>
+    
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Серия*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="Серия" th:field="${department.seria}">
+                                 </div>
+                            </div>
+                            
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Номер документа*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="Номер документа" th:field="${department.numdoc}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+             					 <label class="control-label">Кем выдан документ*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="Кем выдан документ" th:field="${department.isdoc}">
+                                 </div>
+                            </div>
+						
+						                 <div class="col-md-4 control-label">
+						              <label class="control-label">Дата выдачи*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="1998.12.21" class="form-control" th:field="${department.isdate}">
+						              </div>
+						            </div>
+						
+						       		       <div class="col-md-4 control-label">
+						              <label class="control-label">Годен до*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="1998.12.21" class="form-control" th:field="${department.undate}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+								
+						    	 <div class="vali-form-group">
+						           	        <div class="col-md-4 control-label">
+						              <label class="control-label">Национальность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-map-marker" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="Национальность" th:field="${department.national}">
+						              </div>
+						            </div>
+						
+						
+						                   <div class="col-md-4 control-label">
+						              <label class="control-label">Гражданство*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-globe" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="Гражданство" th:field="${department.citizenship}">
+						              </div>						              
+						           		 </div>						            
+						            		</div>		            
+						              <div class="clearfix"> </div>      
+						<!-- - -->
+                                </div>
+							<!-- - -->
+									<div class="validation-form">
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+             					 <label class="control-label">Адрес прописки*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="">
+                                 </div>
+                            </div>
+						
+						                 <div class="col-md-4 control-label">
+						              <label class="control-label">Адрес проживания*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control">
+						              </div>
+						            </div>		
+						              <div class="clearfix"> </div>
+						            </div>
+
+						            </div>
+						            
+      </div>
+      <div id="content-2">
+                            <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Работа</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Статус*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value=""  class="form-control" placeholder="Статус" th:field="${department.workstatus}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Вид работы*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="Вид работы" th:field="${department.workview}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Организация*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="Организация" th:field="${department.workorganization}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						   
+						               		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Подразделение*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="Организация" th:field="${department.worksub}">
+                                 </div>
+                            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Должность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="Должность" th:field="${department.workunit}">
+						              </div>
+						            </div>
+												   
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Квалификация (категория)*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.workqualification}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+						<!--  -->
+						 <div class="validation-form">
+                                 <div class="vali-form-group">  
+                                    <h3>Трудовой договор</h3>                
+                          		<div class="vali-form-group">
+         				     <div class="col-md-4 control-label">
+						              <label class="control-label">Номер ТД*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.worknumber}">
+						              </div>
+						            </div>
+                              </div>
+    	 	
+                                <div class="col-md-4 control-label">
+						              <label class="control-label">Дата ТД*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.workdata}">
+						              </div>
+						            </div>
+                            
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Срок трудового договора*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.05.2020" th:field="${department.workterm}">
+                                 </div>
+                            </div>
+                               
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата приема на работу*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.05.2020" th:field="${department.workreception}">
+                                 </div>
+                            </div>
+                                                   
+				            		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата расторжения</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.05.2020" th:field="${department.workdissolution}">
+                                 </div>
+                            </div>
+                            
+                            		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Кол-во отпуск дней по ТД</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="" th:field="${department.worknumleave}">
+                                 </div>
+                            </div>
+                            		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Допольнительные дни отпуска</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="" th:field="${department.workaddholidays}">
+                                 </div>
+                            </div>
+                            
+                                </div>
+						              <div class="clearfix"> </div>
+  						<!-- - -->
+                                </div>
+							<!-- - -->
+				            
+      </div>
+  
+      <div id="content-3">
+                      <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Стаж</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Вид стажа*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value=""  class="form-control" placeholder="" th:field="${department.expform}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата приема*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.exprecept}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата расторжения ТД*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.expdissolution}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Названия организации*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.exporganization}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Должность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.exppost}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+      </div>
+    <div id="content-4">
+                              <div class="validation-form">
+                                
+                                 <div class="vali-form-group">
+                                  <h3>Семья и родственники</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">ФИО*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value=""  class="form-control" placeholder="ФИО" th:field="${department.familyname}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Степень родства*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.familydigree}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата рождения*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.familybirth}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Место рождения*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.familyplace}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Место работы*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.familywork}">
+						              </div>
+						            </div>
+						
+						   			     <div class="col-md-4 control-label">
+						              <label class="control-label">Должность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.familypost}">
+						              </div>
+						            </div>
+						                <div class="col-md-4 control-label">
+						              <label class="control-label">Место жительства*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.workaddholidays}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+						<!--  -->    
+      			</div>
+      <div id="content-5">
+       				                 <div class="validation-form">
+                                 <div class="vali-form-group">
+                                  <h3>Оброзования</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Наименования учебного заведения*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value=""  class="form-control" placeholder="" th:field="${department.eduinstitution}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Местонохождение*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.edulacation}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Год поступления*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.edurecept}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Год окончания*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.edugraduation}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Специальность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.eduspecialty}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Квалификация (категория)*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.educlass}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Серия диплома*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.eduseria}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">№ диплома*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.edunum}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Дата диплома*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.edudiploma}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Ученая степень*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.edudegree}">
+						              </div>
+						            </div>
+						            
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>
+      </div>    
+      <div id="content-6">
+          <div class="validation-form"> 
+                                 <div class="vali-form-group">
+                                  <h3>Военский учет</h3>
+                          		<div class="vali-form-group">       			
+                                <div class="col-md-4 control-label">
+						              <label class="control-label">Документ военского учета*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarydoc}">
+						              </div>
+						            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">№ военного билета*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.militarytic}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Служба в армии*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.militaryser}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Наименования военкомата*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.militaryname}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Группа учета*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarygroup}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Категория учета*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarycat}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Состав*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarystr}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Военная-учетная специальность*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militaryspec}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Степень годности к службе*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarysuit}">
+						              </div>
+						            </div>
+						            
+						              <div class="col-md-4 control-label">
+						              <label class="control-label">Дата сверки*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarydate}">
+						              </div>
+						            </div>
+						                  <div class="col-md-4 control-label">
+						              <label class="control-label">Дата след. сверки*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.militarytrack}">
+						              </div>
+						            </div>
+						              <div class="clearfix"> </div>
+						            </div>
+					
+						<!-- - -->
+                                </div>  
+      </div>
+      <div id="content-7">
+            <div class="validation-form">
+                                 <div class="vali-form-group">
+                                  <h3>Мед. книжка</h3>
+                          		<div class="vali-form-group">
+         						 <div class="col-md-4 control-label">
+             					 <label class="control-label">Серия*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value=""  class="form-control" placeholder="" th:field="${department.medicalseria}">
+                                 </div>
+                            </div>
+                              </div>
+   
+                            <div class="col-md-4 control-label">
+             					 <label class="control-label">Номер*</label>
+            				       <div class="input-group">             
+                                     <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                  <input type="text" readonly title="Employee ID" value="" class="form-control" placeholder="" th:field="${department.medicalnum}">
+                                 </div>
+                            </div>
+                      
+                                		 <div class="col-md-4 control-label">
+             					 <label class="control-label">Дата получения*</label>
+            				     <div class="input-group">             
+                                 <span class="input-group-addon">
+                                 <i class="fa fa-user" aria-hidden="true"></i>
+                             </span>
+                        <input type="text" readonly title="Employee ID"  class="form-control" placeholder="15.10.1998" th:field="${department.medicaldate}">
+                                 </div>
+                            </div>
+                                </div>
+
+							<div class="vali-form-group">
+					
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Перенесенные заболевания*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-calendar" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly id="Birthdate" title="Birth Date" name="bdate" placeholder="" class="form-control" th:field="${department.medicalpast}">
+						              </div>
+						            </div>
+						
+						            <div class="col-md-4 control-label">
+						              <label class="control-label">Наличие хронических заболеваний*</label>
+						              <div class="input-group">             
+						                  <span class="input-group-addon">
+						              <i class="fa fa-user" aria-hidden="true"></i>
+						              </span>
+						              <input type="text" readonly name="mname" title="Middel Name" class="form-control" placeholder="" th:field="${department.medicalchronic}">
+						              </div>
+						            </div>	      
+						              <div class="clearfix"> </div>
+						            </div>					
+                  </div>
+      </div>
+      <div class="tabs__links">
+        <a href="#content-1">Личные данные</a>
+        <a href="#content-2">Работа</a>
+        <a href="#content-3">Стаж</a>
+        <a href="#content-4">Семья и родственники</a>
+        <a href="#content-5">Оброзование</a>
+        <a href="#content-6">Воинский учет</a>
+        <a href="#content-7">Мед.книжка</a>
+      </div>
+    </div>
+
+  </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- /.content -->
+    </div>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script src="/js/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- DataTables -->
+
+<!-- SlimScroll -->
+<script src="/js/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/js/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/js/app.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/js/demo.js"></script>
+<!-- page script -->
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "ordering": false
+        });
+        $('#table2').DataTable();
+    });
+</script>
+</body>
+</html>
